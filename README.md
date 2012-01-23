@@ -10,7 +10,7 @@ PEAR and Curl module are required.
 2. Add the plugin in your config file (config/main.inc.php). In this case the plugin directory name is 'yubikey_authentication':
 
     `$rcmail_config['plugins'] = array('yubikey_authentication');`
-3. Set your API keys by visiting https://api.yubico.com/get-api-key/
+3. Set your API keys in config.inc.php by visiting https://api.yubico.com/get-api-key/
 
     `$rcmail_config['yubikey_api_id'] = '';  
     $rcmail_config['yubikey_api_key'] = '';`
@@ -19,10 +19,10 @@ PEAR and Curl module are required.
   1. Ensure "Require Yubikey OTP" is checked
   2. Set your "Yubikey ID" by simply pressing on your yubikey (only the first 12 chars will be used).
 
-5. Test your installation
+5. Test your installation. Your done!
 
 # Security
-Validation of the token is done via HMAC authentication (SHA1).
+Validation of the token is done via HMAC authentication (SHA1) over HTTPS.
 
 # License
 GPL2
