@@ -29,3 +29,9 @@ GPL2
 
 # Acknowledgement
 This code is based on work done by Oliver Martin which was using patches from dirkm.
+
+# Source
+https://github.com/northox/roundcube-yubikey-plugin
+
+# Author
+Danny Fullerton - Mantor Organization
