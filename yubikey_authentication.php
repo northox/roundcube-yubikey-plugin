@@ -15,28 +15,22 @@ class yubikey_authentication extends rcube_plugin
 {
     function init()
     {
-		$this->load_config();
+	$this->load_config();
 		
-        $this->add_texts('localization/', false);
+        $this->add_texts('localization/', true);
 
         $this->add_hook('preferences_list', array($this, 'preferences_list'));
         $this->add_hook('preferences_save', array($this, 'preferences_save'));
-        $this->add_hook('template_object_loginform', array($this, 'html_output'));
+        $this->add_hook('template_object_loginform', array($this, 'update_login_form'));
         $this->add_hook('login_after', array($this, 'login_after'));
     }
 
-    function html_output($p)
+    function update_login_form($p)
     {
-        $use_yubikey_value = rcmail::get_instance()->config->get('yubikey');
+        $use_yubikey = rcmail::get_instance()->config->get('yubikey');
         
-        if (isset($use_yubikey_value) && $use_yubikey_value == 1) {
-            $table = new html_table(array('cols' => 2, 'width' => '291px'));
-            $table->add('title', html::label(array('for' => 'rcmloginyubikey'), Q($this->gettext('yubikey'))));
-
-            $input = new html_inputfield(array('name' => '_yubikey', 'id' => 'rcmloginyubikey', 'style' => 'width: 200px;', 'autocomplete' => "off"));
-            $table->add(null, $input->show(get_input_value('_yubikey', RCUBE_INPUT_POST)));
-            
-            $p['content'] .= $table->show();
+        if (isset($use_yubikey) && $use_yubikey== 1) {
+          $this->include_script('yubikey.js');
         }
 
         return $p;
