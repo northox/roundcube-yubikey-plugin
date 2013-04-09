@@ -1,7 +1,7 @@
 # Description
 Use Yubico's Yubikey to authentication to Roundcube webmail.
 
-The plugin is known to be working in production with Roundcube version 0.7.x.
+The plugin is known to be working in production with Roundcube version 0.8 and 0.7.
 
 PEAR and Curl module are required.
 
@@ -29,3 +29,9 @@ GPL2
 
 # Acknowledgement
 This code is based on work done by Oliver Martin which was using patches from dirkm.
+
+# Source
+https://github.com/northox/roundcube-yubikey-plugin
+
+# Author
+Danny Fullerton - Mantor Organization
