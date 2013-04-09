@@ -5,7 +5,7 @@
    * @category    Auth
    * @package     Auth_Yubico
    * @author      Simon Josefsson <simon@yubico.com>, Olov Danielson <olov@yubico.com>
-   * @copyright   2007, 2008, 2009, 2010, 2011 Yubico AB
+   * @copyright   2007-2012 Yubico AB
    * @license     http://opensource.org/licenses/bsd-license.php New BSD License
    * @version     2.0
    * @link        http://www.yubico.com/
@@ -212,17 +212,26 @@ class Auth_Yubico
 	 */
 	function parsePasswordOTP($str, $delim = '[:]')
 	{
-		if (!preg_match("/^((.*)" . $delim . ")?" .
-				"(([cbdefghijklnrtuvCBDEFGHIJKLNRTUV]{0,16})" .
-				"([cbdefghijklnrtuvCBDEFGHIJKLNRTUV]{32}))$/",
-				$str, $matches)) {
-			return false;
-		}
-		$ret['password'] = $matches[2];
-		$ret['otp'] = $matches[3];
-		$ret['prefix'] = $matches[4];
-		$ret['ciphertext'] = $matches[5];
-		return $ret;
+	  if (!preg_match("/^((.*)" . $delim . ")?" .
+			  "(([cbdefghijklnrtuvCBDEFGHIJKLNRTUV]{0,16})" .
+			  "([cbdefghijklnrtuvCBDEFGHIJKLNRTUV]{32}))$/",
+			  $str, $matches)) {
+	    /* Dvorak? */
+	    if (!preg_match("/^((.*)" . $delim . ")?" .
+			    "(([jxe.uidchtnbpygkJXE.UIDCHTNBPYGK]{0,16})" .
+			    "([jxe.uidchtnbpygkJXE.UIDCHTNBPYGK]{32}))$/",
+			    $str, $matches)) {
+	      return false;
+	    } else {
+	      $ret['otp'] = strtr($matches[3], "jxe.uidchtnbpygk", "cbdefghijklnrtuv");
+	    }
+	  } else {
+	    $ret['otp'] = $matches[3];
+	  }
+	  $ret['password'] = $matches[2];
+	  $ret['prefix'] = $matches[4];
+	  $ret['ciphertext'] = $matches[5];
+	  return $ret;
 	}
 
 	/* TODO? Add functions to get parsed parts of server response? */
