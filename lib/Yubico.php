@@ -110,6 +110,13 @@ class Auth_Yubico
 		$this->_key = base64_decode($key);
 		$this->_https = $https;
 		$this->_httpsverify = $httpsverify;
+
+		$version = curl_version();
+		$ssl_supported = ($version['features'] & CURL_VERSION_SSL);
+		if ($this->_https && !$ssl_supported) {
+			PEAR::raiseError('HTTPS requested while curl does not support SSL');
+			exit(1);
+		}
 	}
 
 	/**
