@@ -58,13 +58,18 @@ class yubikey_authentication extends rcube_plugin
             } 
             else {
                 // Check the OTP against Yubikey webservice
-                $yubi = new Auth_Yubico(rcmail::get_instance()->config->get('yubikey_api_id'), rcmail::get_instance()->config->get('yubikey_api_key'), true, true);
-                $auth = $yubi->verify($yubikey_otp);
+		try {
+                  $yubi = new Auth_Yubico(rcmail::get_instance()->config->get('yubikey_api_id'), rcmail::get_instance()->config->get('yubikey_api_key'), true, true);
+                  $auth = $yubi->verify($yubikey_otp);
       
-                if (PEAR::isError($auth)) {
+                  if (PEAR::isError($auth)) {
                     // Yubikey auth failed, back to login prompt
                     rcmail::get_instance()->logout_actions();
                     rcmail::get_instance()->kill_session();
+                  }
+                } catch (Exception $e) {
+		  rcmail::get_instance()->logout_actions();
+                  rcmail::get_instance()->kill_session();
                 }
             }
         }

@@ -111,13 +111,20 @@ class Auth_Yubico
 		$this->_https = $https;
 		$this->_httpsverify = $httpsverify;
 
-		$version = curl_version();
-		$ssl_supported = ($version['features'] & CURL_VERSION_SSL);
-		if ($this->_https && !$ssl_supported) {
-			PEAR::raiseError('HTTPS requested while curl does not support SSL');
-			exit(1);
-		}
-	}
+                if($this->_https) $this->test_curl_ssl_support();
+        }
+
+        /**
+         * Test if Curl support SSL
+         * Will throw exception if curl was not complied with SSL support
+         */
+        private function test_curl_ssl_support()
+        {
+                if(!($version = curl_version()) ||
+                   !($version['features'] & CURL_VERSION_SSL)) {
+                  throw new Exception('HTTPS requested while Curl not compiled with SSL');
+                }
+        }
 
 	/**
 	 * Specify to use a different URL part for verification.
