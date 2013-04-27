@@ -20,6 +20,13 @@ class yubikey_authentication extends rcube_plugin
   {
     $use_yubikey = rcmail::get_instance()->config->get('yubikey');
     return (isset($use_yubikey) && $use_yubikey == true);
+  }
+  
+  // TODO add error message
+  private function fail()
+  {
+    rcmail::get_instance()->logout_actions();
+    rcmail::get_instance()->kill_session();
   } 
 
   function init()
@@ -29,7 +36,7 @@ class yubikey_authentication extends rcube_plugin
     // minimal configuration validation
     $id = rcmail::get_instance()->config->get('yubikey_api_id');
     $key = rcmail::get_instance()->config->get('yubikey_api_key');
-    if(is_enabled() && (empty($id) || empty($key))) 
+    if ($this->is_enabled() && (empty($id) || empty($key))) 
       throw new Exception('yubikey_api_id and yubikey_api_key must be set');
     
     $this->add_texts('localization/', true);
@@ -63,8 +70,7 @@ class yubikey_authentication extends rcube_plugin
       // and that it matches the first 12 characters of the OTP
       if (empty($yubikey_id) || substr($yubikey_otp, 0, 12) !== $yubikey_id)
       {
-        rcmail::get_instance()->logout_actions();
-        rcmail::get_instance()->kill_session();
+        $this->fail();
       }
       else
       {
@@ -74,18 +80,12 @@ class yubikey_authentication extends rcube_plugin
                                   rcmail::get_instance()->config->get('yubikey_api_key'), 
                                   true, 
                                   true);
-          $auth = $yubi->verify($yubikey_otp);
-
-          if (PEAR::isError($auth))
-          {
-            rcmail::get_instance()->logout_actions();
-            rcmail::get_instance()->kill_session();
-          }
+          if (PEAR::isError($yubi->verify($yubikey_otp)))
+            $this->fail();
         }
         catch(Exception $e)
         {
-          rcmail::get_instance()->logout_actions();
-          rcmail::get_instance()->kill_session();
+          $this->fail();
         }
       }
     }
