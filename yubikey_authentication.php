@@ -25,6 +25,12 @@ class yubikey_authentication extends rcube_plugin
   function init()
   {
     $this->load_config();
+
+    // minimal configuration validation
+    $id = rcmail::get_instance()->config->get('yubikey_api_id');
+    $key = rcmail::get_instance()->config->get('yubikey_api_key');
+    if(is_enabled() && (empty($id) || empty($key))) 
+      throw new Exception('yubikey_api_id and yubikey_api_key must be set');
     
     $this->add_texts('localization/', true);
 
