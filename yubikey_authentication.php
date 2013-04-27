@@ -19,7 +19,7 @@ class yubikey_authentication extends rcube_plugin
   private function is_enabled()
   {
     $use_yubikey = rcmail::get_instance()->config->get('yubikey');
-    return (isset($use_yubikey) && $use_yubikey == true)
+    return (isset($use_yubikey) && $use_yubikey == true);
   } 
 
   function init()
@@ -76,7 +76,7 @@ class yubikey_authentication extends rcube_plugin
             rcmail::get_instance()->kill_session();
           }
         }
-        catch (Exception $e)
+        catch(Exception $e)
         {
           rcmail::get_instance()->logout_actions();
           rcmail::get_instance()->kill_session();
