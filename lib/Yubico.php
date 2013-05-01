@@ -1,20 +1,14 @@
 <?php
-  /**
-   * Class for verifying Yubico One-Time-Passcodes
-   *
-   * @category    Auth
-   * @package     Auth_Yubico
-   * @author      Simon Josefsson <simon@yubico.com>, Olov Danielson <olov@yubico.com>
-   * @copyright   2007-2012 Yubico AB
-   * @license     http://opensource.org/licenses/bsd-license.php New BSD License
-   * @version     2.0
-   * @link        http://www.yubico.com/
-   */
-
-require_once 'PEAR.php';
-
 /**
  * Class for verifying Yubico One-Time-Passcodes
+ *
+ * @category    Auth
+ * @package     Auth_Yubico
+ * @author      Simon Josefsson <simon@yubico.com>, Olov Danielson <olov@yubico.com>
+ * @copyright   2007-2012 Yubico AB
+ * @license     http://opensource.org/licenses/bsd-license.php New BSD License
+ * @version     2.0
+ * @link        http://www.yubico.com/
  *
  * Simple example:
  * <code>
@@ -22,14 +16,14 @@ require_once 'PEAR.php';
  * $otp = "ccbbddeertkrctjkkcglfndnlihhnvekchkcctif";
  *
  * # Generate a new id+key from https://api.yubico.com/get-api-key/
- * $yubi = new Auth_Yubico('42', 'FOOBAR=');
- * $auth = $yubi->verify($otp);
- * if (PEAR::isError($auth)) {
- *    print "<p>Authentication failed: " . $auth->getMessage();
- *    print "<p>Debug output from server: " . $yubi->getLastResponse();
- * } else {
- *    print "<p>You are authenticated!";
+ * try {
+ *   $yubi = new Auth_Yubico('42', 'FOOBAR=');
+ *   $yubi->verify($otp);
+ * } catch $e {
+ *   # authentication failed
+ *   # use $e->getMessage() for debug
  * }
+ * # authentication succeeded
  * </code>
  */
 class Auth_Yubico
@@ -268,7 +262,7 @@ class Auth_Yubico
 	  $param_array = array();
 	  foreach ($parameters as $param) {
 	    if(!preg_match("/" . $param . "=([0-9]+)/", $this->_response, $out)) {
-	      return PEAR::raiseError('Could not parse parameter ' . $param . ' from response');
+	      throw new Exception('Could not parse parameter ' . $param . ' from response');
 	    }
 	    $param_array[$param]=$out[1];
 	  }
@@ -289,7 +283,6 @@ class Auth_Yubico
 	 *                             and 100 or "fast" or "secure".
 	 * @param int $timeout         Max number of seconds to wait
 	 *                             for responses
-	 * @return mixed               PEAR error on error, true otherwise
 	 * @access public
 	 */
 	function verify($token, $use_timestamp=null, $wait_for_all=False,
@@ -298,7 +291,7 @@ class Auth_Yubico
 	  /* Construct parameters string */
 	  $ret = $this->parsePasswordOTP($token);
 	  if (!$ret) {
-	    return PEAR::raiseError('Could not parse Yubikey OTP');
+	    throw new Exception('Could not parse Yubikey OTP');
 	  }
 	  $params = array('id'=>$this->_id, 
 			  'otp'=>$ret['otp'],
@@ -339,7 +332,7 @@ class Auth_Yubico
 	      $this->_lastquery .= $query;
 	      
 	      $handle = curl_init($query);
-	      curl_setopt($handle, CURLOPT_USERAGENT, "PEAR Auth_Yubico");
+	      curl_setopt($handle, CURLOPT_USERAGENT, "Auth_Yubico");
 	      curl_setopt($handle, CURLOPT_RETURNTRANSFER, 1);
 	      if (!$this->_httpsverify) {
 		curl_setopt($handle, CURLOPT_SSL_VERIFYPEER, 0);
@@ -451,9 +444,9 @@ class Auth_Yubico
 		      curl_close($h);
 		    }
 		    curl_multi_close($mh);
-		    if ($replay) return PEAR::raiseError('REPLAYED_OTP');
+		    if ($replay) throw new Exception('REPLAYED_OTP');
 		    if ($valid) return true;
-		    return PEAR::raiseError($status);
+		    throw new Exception($status);
 		  }
 		
 		curl_multi_remove_handle($mh, $info['handle']);
@@ -475,9 +468,9 @@ class Auth_Yubico
 	  }
 	  curl_multi_close ($mh);
 	  
-	  if ($replay) return PEAR::raiseError('REPLAYED_OTP');
+	  if ($replay) throw new Exception('REPLAYED_OTP');
 	  if ($valid) return true;
-	  return PEAR::raiseError('NO_VALID_ANSWER');
+	  throw new Exception('NO_VALID_ANSWER');
 	}
 }
 ?>
