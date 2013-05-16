@@ -3,7 +3,8 @@ Use Yubico's Yubikey to authentication to Roundcube webmail.
 
 The plugin is known to be working in production with Roundcube version 0.8 and 0.7.
 
-PEAR and Curl (with TLS support) module are required.
+# Requirements
+- Curl PHP module with TLS support.
 
 # Installation
 1. Install the code in the plugin directory (i.e. roundcube/plugins/yubikey_authentication/).
