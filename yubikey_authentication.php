@@ -1,9 +1,9 @@
 <?php
 /**
-* Roundcube-Yubikey-plugin
+* Roundcube-YubiKey-plugin
 *
-* This plugin enables Yubikey authentication within Roundcube webmail against 
-* the Yubikey web service API.
+* This plugin enables YubiKey authentication within Roundcube webmail against 
+* the YubiKey web service API.
 *
 * @author Danny Fullerton <northox@mantor.org>
 * @license GPL2
@@ -66,7 +66,7 @@ class yubikey_authentication extends rcube_plugin
       $yubikey_otp = get_input_value('_yubikey', RCUBE_INPUT_POST);
       $yubikey_id = rcmail::get_instance()->config->get('yubikey_id');
 
-      // make sure that there is a Yubikey ID in the user's prefs
+      // make sure that there is a YubiKey ID in the user's prefs
       // and that it matches the first 12 characters of the OTP
       if (empty($yubikey_id) || substr($yubikey_otp, 0, 12) !== $yubikey_id)
       {
@@ -99,7 +99,7 @@ class yubikey_authentication extends rcube_plugin
     {
       if ($this->is_enabled())
       {
-        // add checkbox to enable/disable Yubikey auth for the current user
+        // add checkbox to enable/disable YubiKey auth for the current user
         $checked = rcmail::get_instance()->config->get('yubikey_required');
         $checked = (isset($checked) && $checked == true);
         $chk_yubikey = new html_checkbox(array(
@@ -110,7 +110,7 @@ class yubikey_authentication extends rcube_plugin
           'title' => html::label('rcmfd_yubikey_required', Q($this->gettext('yubikeyrequired'))), 
           'content' => $chk_yubikey->show($checked));
 
-        // add inputfield for the Yubikey id
+        // add inputfield for the YubiKey id
         $input_yubikey_id = new html_inputfield(array(
           'name' => '_yubikey_id', 
           'id' => 'rcmfd_yubikey_id', 

@@ -1,8 +1,9 @@
 <?php
-// enable / disable yubikey authentication
+// enable / disable YubiKey authentication
 $rcmail_config['yubikey'] = true;
 
-// yubikey API key & ID needed to access the web service API. Visit https://api.yubico.com/get-api-key/
+// YubiKey API key & ID needed to access the web service API.
+// see: http://www.yubico.com/faq/api-key-yubikey-development/
 $rcmail_config['yubikey_api_id'] = '';
 $rcmail_config['yubikey_api_key'] = '';
 

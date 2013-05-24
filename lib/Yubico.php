@@ -291,7 +291,7 @@ class Auth_Yubico
 	  /* Construct parameters string */
 	  $ret = $this->parsePasswordOTP($token);
 	  if (!$ret) {
-	    throw new Exception('Could not parse Yubikey OTP');
+	    throw new Exception('Could not parse YubiKey OTP');
 	  }
 	  $params = array('id'=>$this->_id, 
 			  'otp'=>$ret['otp'],

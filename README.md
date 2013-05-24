@@ -1,5 +1,5 @@
 # Description
-Use Yubico's Yubikey to authentication to Roundcube webmail.
+Use Yubico's YubiKey to authentication to Roundcube webmail.
 
 The plugin is known to be working in production with Roundcube version 0.8 and 0.7.
 
@@ -22,8 +22,8 @@ $rcmail_config['yubikey_api_key'] = 'KEY HERE';
 ```
 
 4. Login normally and configure your yubikey in "Settings/Server Settings" menu:
-  1. Ensure "Require Yubikey OTP" is checked
-  2. Set your "Yubikey ID" by simply pressing on your yubikey (only the first 12 chars will be used).
+  1. Ensure "Require YubiKey OTP" is checked
+  2. Set your "YubiKey ID" by simply pressing on your yubikey (only the first 12 chars will be used).
 
 5. Test your installation. You're done!
 

@@ -2,9 +2,9 @@
 
 $labels = array();
 $labels['yubikey'] = 'Einmalpasswort';
-$labels['yubikeyrequired'] = 'Yubikey OTP erforderlich';
-$labels['yubikeyid'] = 'Yubikey ID';
-$labels['yubikeysettings'] = 'Yubikey Authentifikation';
+$labels['yubikeyrequired'] = 'YubiKey OTP erforderlich';
+$labels['yubikeyid'] = 'YubiKey ID';
+$labels['yubikeysettings'] = 'YubiKey Authentifikation';
 
 $messages = array();
 $messages['yubikeyauthfailed'] = $labels['yubikey'].' falsch';
