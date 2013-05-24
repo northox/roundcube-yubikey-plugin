@@ -7,5 +7,8 @@ $rcmail_config['yubikey'] = true;
 $rcmail_config['yubikey_api_id'] = '';
 $rcmail_config['yubikey_api_key'] = '';
 
+// YubiKey API URL, defaulting to YubiCloud servers if not specified.
+$rcmail_config['yubikey_api_url'] = '';
+
 $rcmail_config['debug_logger']['yubikey'] = 'yubikey';
 ?>
