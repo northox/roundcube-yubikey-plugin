@@ -1,5 +1,5 @@
-# Description
-Use Yubico's YubiKey to authentication to Roundcube webmail.
+# roundcube-yubikey-plugin
+Use Yubico's YubiKey to authentication on [Roundcube webmail](http://roundcube.net/).
 
 The plugin is known to be working in production with Roundcube version 0.9.1, 0.8 and 0.7.
 
@@ -7,10 +7,10 @@ The plugin is known to be working in production with Roundcube version 0.9.1, 0.
 - Support alternative API servers
 - Validation of the token is done via HMAC-SHA1 authentication over HTTPS (with certificate and hostname validation)
 
-# Requirements
+## Requirements
 - Curl PHP module with TLS support.
 
-# Installation
+## Installation
 1. Install the code in the plugin directory (i.e. roundcube/plugins/yubikey_authentication/).
 2. Add the plugin in your config file (config/main.inc.php). In this case the plugin directory name is 'yubikey_authentication'
 
@@ -31,17 +31,17 @@ $rcmail_config['yubikey_api_key'] = 'KEY HERE';
 
 5. Test your installation. You're done!
 
-# License
+## License
 GPL2
 
-# Source
+## Source
 https://github.com/northox/roundcube-yubikey-plugin
 
-# Acknowledgement
+## Acknowledgements
 This code is based on work done by Oliver Martin which was using patches from dirkm.
 
-# Contributors
+### Contributors
 Stuart Henderson - support alternative API servers and some cosmetic tweaks
 
-# Author
+### Author
 Danny Fullerton - Mantor Organization
