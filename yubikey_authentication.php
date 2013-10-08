@@ -1,16 +1,20 @@
 <?php
+
 /**
-* Roundcube-YubiKey-plugin
-*
-* This plugin enables YubiKey authentication within Roundcube webmail against 
-* the YubiKey web service API.
-*
-* @author Danny Fullerton <northox@mantor.org>
-* @license GPL2
-*
-* Acknowledgement: This code is based on work done by Oliver Martin which was
-* using patches from dirkm.
-*/
+ * Roundcube-YubiKey-plugin, with modification to disallow user changes
+ *
+ * Date: 2013-10-08
+ *
+ * This plugin enables YubiKey authentication within Roundcube webmail against 
+ * the YubiKey web service API.
+ *
+ * @author Peter Kahl (disallow user changes), based on original plugin by
+ * Danny Fullerton <northox@mantor.org>
+ * @license GPL2
+ *
+ * Acknowledgement: This code is based on work done by Oliver Martin which was
+ * using patches from dirkm.
+ */
 
 require_once('lib/Yubico.php');
 
@@ -109,25 +113,38 @@ class yubikey_authentication extends rcube_plugin
     {
       if ($this->is_enabled())
       {
+        $checked  = rcmail::get_instance()->config->get('yubikey_required');
+        $checked  = (isset($checked) && $checked == true);
+    
+        if (!empty(rcmail::get_instance()->config->get('yubikey_disallow_user_changes')) && rcmail::get_instance()->config->get('yubikey_disallow_user_changes') === true) {
+          $disabled = ($checked && strlen(rcmail::get_instance()->config->get('yubikey_id')) == 12);
+        }
+        else {
+          $disabled = false;
+        }
+
         // add checkbox to enable/disable YubiKey auth for the current user
-        $checked = rcmail::get_instance()->config->get('yubikey_required');
-        $checked = (isset($checked) && $checked == true);
         $chk_yubikey = new html_checkbox(array(
-          'name' => '_yubikey_required',
-          'id' => 'rcmfd_yubikey_required',
-          'value' => $checked));
+          'name'     => '_yubikey_required',
+          'id'       => 'rcmfd_yubikey_required',
+          'value'    => $checked,
+          'disabled' => $disabled
+          ));
         $args['blocks']['main']['options']['yubikey_required'] = array(
-          'title' => html::label('rcmfd_yubikey_required', Q($this->gettext('yubikeyrequired'))), 
-          'content' => $chk_yubikey->show($checked));
+          'title'    => html::label('rcmfd_yubikey_required', Q($this->gettext('yubikeyrequired'))), 
+          'content'  => $chk_yubikey->show($checked)
+          );
 
         // add inputfield for the YubiKey id
         $input_yubikey_id = new html_inputfield(array(
-          'name' => '_yubikey_id', 
-          'id' => 'rcmfd_yubikey_id', 
-          'size' => 10));
+          'name'     => '_yubikey_id', 
+          'id'       => 'rcmfd_yubikey_id', 
+          'size'     => 10,
+          'disabled' => $disabled
+          ));
         $args['blocks']['main']['options']['yubikey_id'] = array(
-          'title' => html::label('rcmfd_yubikey_id', Q($this->gettext('yubikeyid'))),
-          'content' => $input_yubikey_id->show(rcmail::get_instance()->config->get('yubikey_id')));
+          'title'    => html::label('rcmfd_yubikey_id', Q($this->gettext('yubikeyid'))),
+          'content'  => $input_yubikey_id->show(rcmail::get_instance()->config->get('yubikey_id')));
       }
     }
 

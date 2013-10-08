@@ -7,6 +7,13 @@ $rcmail_config['yubikey'] = true;
 $rcmail_config['yubikey_api_id'] = '';
 $rcmail_config['yubikey_api_key'] = '';
 
+// Once a user enters and saves his YubiKey ID, he will not
+// be able to make changes to YubiKey ID or disable
+// YubiKey OTP requirement.
+// This is useful when users don't fully understand the benefits
+// of 2-factor authentication.
+$rcmail_config['yubikey_disallow_user_changes'] = true; // bool
+
 // YubiKey API URL, defaulting to YubiCloud servers if not specified.
 $rcmail_config['yubikey_api_url'] = '';
 

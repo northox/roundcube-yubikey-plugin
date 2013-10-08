@@ -1,7 +1,11 @@
 # roundcube-yubikey-plugin
 Use Yubico's YubiKey to authentication on [Roundcube webmail](http://roundcube.net/).
 
-The plugin is known to be working in production with Roundcube version 0.9.1, 0.8 and 0.7.
+This fork is enahanced by the option to disallow user changes to the YubiKey ID
+after he registers his YubiKey ID. This is useful when users don't comprehend the benefits
+of 2-factor aithentication.
+
+The plugin is known to be working in production with Roundcube version 0.9.4, 0.9.1, 0.8 and 0.7.
 
 ##Features
 - Support alternative API servers
