@@ -1,10 +1,6 @@
 # roundcube-yubikey-plugin
 Use Yubico's YubiKey to authentication on [Roundcube webmail](http://roundcube.net/).
 
-This fork is enahanced by the option to disallow user changes to the YubiKey ID
-after he registers his YubiKey ID. This is useful when users don't comprehend the benefits
-of 2-factor aithentication.
-
 The plugin is known to be working in production with Roundcube version 0.9.4, 0.9.1, 0.8 and 0.7.
 
 ##Features
@@ -25,7 +21,7 @@ $rcmail_config['plugins'] = array('yubikey_authentication');
 3. Set your API keys in config.inc.php by visiting https://api.yubico.com/get-api-key/
 
 ```php
-$rcmail_config['yubikey_api_id'] = 'ID HERE'; 
+$rcmail_config['yubikey_api_id']  = 'ID HERE'; 
 $rcmail_config['yubikey_api_key'] = 'KEY HERE';
 ```
 

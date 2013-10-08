@@ -1,20 +1,16 @@
 <?php
-
 /**
- * Roundcube-YubiKey-plugin, with modification to disallow user changes
- *
- * Date: 2013-10-08
- *
- * This plugin enables YubiKey authentication within Roundcube webmail against 
- * the YubiKey web service API.
- *
- * @author Peter Kahl (disallow user changes), based on original plugin by
- * Danny Fullerton <northox@mantor.org>
- * @license GPL2
- *
- * Acknowledgement: This code is based on work done by Oliver Martin which was
- * using patches from dirkm.
- */
+* Roundcube-YubiKey-plugin
+*
+* This plugin enables YubiKey authentication within Roundcube webmail against 
+* the YubiKey web service API.
+*
+* @author Danny Fullerton <northox@mantor.org>
+* @license GPL2
+*
+* Acknowledgement: This code is based on work done by Oliver Martin which was
+* using patches from dirkm.
+*/
 
 require_once('lib/Yubico.php');
 
@@ -107,6 +103,16 @@ class yubikey_authentication extends rcube_plugin
     return $args;
   }
 
+  private function disallow_change()
+  {
+    $checked  = rcmail::get_instance()->config->get('yubikey_required');
+    $checked  = (isset($checked) && $checked == true);
+    if (!empty(rcmail::get_instance()->config->get('yubikey_disallow_user_changes')) && rcmail::get_instance()->config->get('yubikey_disallow_user_changes') === true) {
+      return ($checked && strlen(rcmail::get_instance()->config->get('yubikey_id')) == 12);
+    }
+    return false;
+  }
+
   function preferences_list($args)
   {
     if ($args['section'] == 'server')
@@ -115,13 +121,7 @@ class yubikey_authentication extends rcube_plugin
       {
         $checked  = rcmail::get_instance()->config->get('yubikey_required');
         $checked  = (isset($checked) && $checked == true);
-    
-        if (!empty(rcmail::get_instance()->config->get('yubikey_disallow_user_changes')) && rcmail::get_instance()->config->get('yubikey_disallow_user_changes') === true) {
-          $disabled = ($checked && strlen(rcmail::get_instance()->config->get('yubikey_id')) == 12);
-        }
-        else {
-          $disabled = false;
-        }
+        $disabled = $this->disallow_change();
 
         // add checkbox to enable/disable YubiKey auth for the current user
         $chk_yubikey = new html_checkbox(array(
@@ -151,15 +151,23 @@ class yubikey_authentication extends rcube_plugin
     return $args;
   }
 
-  function preferences_save($args)
-  {
-    if ($this->is_enabled())
-    {
-      $args['prefs']['yubikey_required'] = isset($_POST['_yubikey_required']);
-      $args['prefs']['yubikey_id'] = substr($_POST['_yubikey_id'], 0, 12);
+  function preferences_save($args) {
+    if ($this->is_enabled()) {
+      if ($this->disallow_change()) {
+        // use values already saved earlier
+        $args['prefs']['yubikey_required'] = true;
+        $args['prefs']['yubikey_id']       = rcmail::get_instance()->config->get('yubikey_id');
+      }
+      else {
+        // use newly posted values
+        $args['prefs']['yubikey_required'] = isset($_POST['_yubikey_required']);
+        $args['prefs']['yubikey_id']       = substr($_POST['_yubikey_id'], 0, 12);
+      }
     }
-
     return $args;
   }
 }
-?>
+
+//----------------------------------------------------------------------
+
+
