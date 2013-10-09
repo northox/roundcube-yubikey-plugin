@@ -10,6 +10,7 @@
 *
 * Acknowledgement: This code is based on work done by Oliver Martin which was
 * using patches from dirkm.
+*
 */
 
 require_once('lib/Yubico.php');
@@ -18,10 +19,31 @@ class yubikey_authentication extends rcube_plugin
 {
   private function is_enabled()
   {
-    $use_yubikey = rcmail::get_instance()->config->get('yubikey');
-    return (isset($use_yubikey) && $use_yubikey == true);
+    $r = ($this->get('yubikey') === true);
+    return $r;
   }
   
+  private function is_required()
+  {
+    $r = ($this->get('yubikey_required') == 'on');
+    return $r;
+  }
+ 
+  private function disallow_change()
+  {
+    $r = false;
+    if ($this->get('yubikey_disallow_user_changes') === true) { 
+      $r = ($this->is_required() && strlen($this->get('yubikey_id')) == 12);
+    }
+    
+    return $r;
+  }
+  
+  private function get($v)
+  {
+    return rcmail::get_instance()->config->get($v);
+  }
+ 
   // TODO add error message
   private function fail()
   {
@@ -34,8 +56,8 @@ class yubikey_authentication extends rcube_plugin
     $this->load_config();
 
     // minimal configuration validation
-    $id = rcmail::get_instance()->config->get('yubikey_api_id');
-    $key = rcmail::get_instance()->config->get('yubikey_api_key');
+    $id = $this->get('yubikey_api_id');
+    $key = $this->get('yubikey_api_key');
     if ($this->is_enabled() && (empty($id) || empty($key))) 
       throw new Exception('yubikey_api_id and yubikey_api_key must be set');
     
@@ -57,117 +79,107 @@ class yubikey_authentication extends rcube_plugin
 
   function login_after($args)
   {
-    if (!$this->is_enabled()) return $args;
-
-    $yubikey_required = rcmail::get_instance()->config->get('yubikey_required');
-
-    if (isset($yubikey_required) && $yubikey_required == true)
+    if (!$this->is_enabled() || !$this->is_required()) return $args;
+ 
+    $otp = get_input_value('_yubikey', RCUBE_INPUT_POST);
+    $id = $this->get('yubikey_id');
+    $url = $this->get('yubikey_api_url');
+    $https = true;
+    if (!empty($url) && $_url = parse_url($url)) {
+      if ($_url['scheme'] == "http") $https = false;
+      $urlpart = $_url['host'];
+      if (!empty($_url['port'])) $urlpart .= ':'.$_url['port'];
+      $urlpart .= $_url['path'];
+    }
+ 
+    // make sure that there is a YubiKey ID in the user's prefs
+    // and that it matches the first 12 characters of the OTP
+    if (empty($id) || substr($otp, 0, 12) !== $id)
     {
-      $yubikey_otp = get_input_value('_yubikey', RCUBE_INPUT_POST);
-      $yubikey_id = rcmail::get_instance()->config->get('yubikey_id');
-      $yubikey_url = rcmail::get_instance()->config->get('yubikey_api_url');
-      $yubikey_https = true;
-      if (!empty($yubikey_url) && $_url = parse_url($yubikey_url)) {
-        if ($_url['scheme'] == "http") $yubikey_https = false;
-        $yubikey_urlpart = $_url['host'];
-        if (!empty($_url['port'])) $yubikey_urlpart .= ':'.$_url['port'];
-        $yubikey_urlpart .= $_url['path'];
+      $this->fail();
+    }
+    else
+    {
+      try
+      {
+        $yubi = new Auth_Yubico(
+          $this->get('yubikey_api_id'), 
+          $this->get('yubikey_api_key'), 
+          $https,
+          true
+        );
+        
+        if (!empty($urlpart)) $yubi->addURLpart($urlpart);       
+        $yubi->verify($otp);
       }
-
-      // make sure that there is a YubiKey ID in the user's prefs
-      // and that it matches the first 12 characters of the OTP
-      if (empty($yubikey_id) || substr($yubikey_otp, 0, 12) !== $yubikey_id)
+      catch(Exception $e)
       {
         $this->fail();
       }
-      else
-      {
-        try
-        {
-          $yubi = new Auth_Yubico(rcmail::get_instance()->config->get('yubikey_api_id'), 
-                                  rcmail::get_instance()->config->get('yubikey_api_key'), 
-                                  $yubikey_https,
-                                  true);
-          if (!empty($yubikey_urlpart))
-            $yubi->addURLpart($yubikey_urlpart);
-          if (PEAR::isError($yubi->verify($yubikey_otp)))
-            $this->fail();
-        }
-        catch(Exception $e)
-        {
-          $this->fail();
-        }
-      }
     }
 
     return $args;
   }
-
-  private function disallow_change()
-  {
-    $checked  = rcmail::get_instance()->config->get('yubikey_required');
-    $checked  = (isset($checked) && $checked == true);
-    if (!empty(rcmail::get_instance()->config->get('yubikey_disallow_user_changes')) && rcmail::get_instance()->config->get('yubikey_disallow_user_changes') === true) {
-      return ($checked && strlen(rcmail::get_instance()->config->get('yubikey_id')) == 12);
-    }
-    return false;
-  }
-
+ 
   function preferences_list($args)
   {
-    if ($args['section'] == 'server')
-    {
-      if ($this->is_enabled())
-      {
-        $checked  = rcmail::get_instance()->config->get('yubikey_required');
-        $checked  = (isset($checked) && $checked == true);
-        $disabled = $this->disallow_change();
+    if ($args['section'] != 'server' || !$this->is_enabled()) return $args;
+    
+    $disabled = $this->disallow_change();
+ 
+    // add checkbox to enable/disable YubiKey auth for the current user
+    $chk_yubikey = new html_checkbox(
+      array(
+        'name'     => '_yubikey_required',
+        'id'       => 'rcmfd_yubikey_required',
+        'disabled' => $disabled
+      )
+    );
+    $args['blocks']['main']['options']['yubikey_required'] = array(
+      'title' => html::label(
+        'rcmfd_yubikey_required', 
+        Q($this->gettext('yubikeyrequired'))
+      ), 
+      'content' => $chk_yubikey->show(!$this->is_required()) // TODO this is weird
+    );
 
-        // add checkbox to enable/disable YubiKey auth for the current user
-        $chk_yubikey = new html_checkbox(array(
-          'name'     => '_yubikey_required',
-          'id'       => 'rcmfd_yubikey_required',
-          'value'    => $checked,
-          'disabled' => $disabled
-          ));
-        $args['blocks']['main']['options']['yubikey_required'] = array(
-          'title'    => html::label('rcmfd_yubikey_required', Q($this->gettext('yubikeyrequired'))), 
-          'content'  => $chk_yubikey->show($checked)
-          );
-
-        // add inputfield for the YubiKey id
-        $input_yubikey_id = new html_inputfield(array(
-          'name'     => '_yubikey_id', 
-          'id'       => 'rcmfd_yubikey_id', 
-          'size'     => 10,
-          'disabled' => $disabled
-          ));
-        $args['blocks']['main']['options']['yubikey_id'] = array(
-          'title'    => html::label('rcmfd_yubikey_id', Q($this->gettext('yubikeyid'))),
-          'content'  => $input_yubikey_id->show(rcmail::get_instance()->config->get('yubikey_id')));
-      }
-    }
-
+    // add inputfield for the YubiKey id
+    $input_yubikey_id = new html_inputfield(
+      array(
+        'name'     => '_yubikey_id', 
+        'id'       => 'rcmfd_yubikey_id', 
+        'size'     => 12,
+        'disabled' => $disabled
+      )
+    );
+    $args['blocks']['main']['options']['yubikey_id'] = array(
+      'title' => html::label(
+        'rcmfd_yubikey_id', 
+        Q($this->gettext('yubikeyid'))
+      ),
+      'content' => $input_yubikey_id->show($this->get('yubikey_id'))
+    );
+ 
     return $args;
   }
 
-  function preferences_save($args) {
-    if ($this->is_enabled()) {
-      if ($this->disallow_change()) {
-        // use values already saved earlier
-        $args['prefs']['yubikey_required'] = true;
-        $args['prefs']['yubikey_id']       = rcmail::get_instance()->config->get('yubikey_id');
-      }
-      else {
-        // use newly posted values
-        $args['prefs']['yubikey_required'] = isset($_POST['_yubikey_required']);
-        $args['prefs']['yubikey_id']       = substr($_POST['_yubikey_id'], 0, 12);
-      }
+  function preferences_save($args)
+  {
+    if (!$this->is_enabled()) return $args;
+    
+    if ($this->disallow_change())
+    {
+      // use values already saved earlier
+      $args['prefs']['yubikey_required'] = true;
+      $args['prefs']['yubikey_id']       = $this->get('yubikey_id');
     }
+    else {
+      // use newly posted values
+      $args['prefs']['yubikey_required'] = isset($_POST['_yubikey_required']);
+      $args['prefs']['yubikey_id']       = substr($_POST['_yubikey_id'], 0, 12);
+    }
+    
     return $args;
   }
 }
-
-//----------------------------------------------------------------------
-
-
+?>

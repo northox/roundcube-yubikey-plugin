@@ -1,5 +1,4 @@
 <?php
-
 // enable / disable YubiKey authentication
 $rcmail_config['yubikey'] = true;
 
@@ -13,12 +12,10 @@ $rcmail_config['yubikey_api_key'] = '';
 // YubiKey OTP requirement.
 // This is *useful* when users don't fully understand the benefits
 // of 2-factor authentication.
-$rcmail_config['yubikey_disallow_user_changes'] = true; // bool
+$rcmail_config['yubikey_disallow_user_changes'] = false; // bool
 
 // YubiKey API URL, defaulting to YubiCloud servers if not specified.
 $rcmail_config['yubikey_api_url'] = '';
 
 $rcmail_config['debug_logger']['yubikey'] = 'yubikey';
-
-
-
+?>
