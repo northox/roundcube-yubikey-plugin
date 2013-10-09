@@ -103,46 +103,71 @@ class yubikey_authentication extends rcube_plugin
     return $args;
   }
 
+  private function disallow_change()
+  {
+    $checked  = rcmail::get_instance()->config->get('yubikey_required');
+    $checked  = (isset($checked) && $checked == true);
+    if (!empty(rcmail::get_instance()->config->get('yubikey_disallow_user_changes')) && rcmail::get_instance()->config->get('yubikey_disallow_user_changes') === true) {
+      return ($checked && strlen(rcmail::get_instance()->config->get('yubikey_id')) == 12);
+    }
+    return false;
+  }
+
   function preferences_list($args)
   {
     if ($args['section'] == 'server')
     {
       if ($this->is_enabled())
       {
+        $checked  = rcmail::get_instance()->config->get('yubikey_required');
+        $checked  = (isset($checked) && $checked == true);
+        $disabled = $this->disallow_change();
+
         // add checkbox to enable/disable YubiKey auth for the current user
-        $checked = rcmail::get_instance()->config->get('yubikey_required');
-        $checked = (isset($checked) && $checked == true);
         $chk_yubikey = new html_checkbox(array(
-          'name' => '_yubikey_required',
-          'id' => 'rcmfd_yubikey_required',
-          'value' => $checked));
+          'name'     => '_yubikey_required',
+          'id'       => 'rcmfd_yubikey_required',
+          'value'    => $checked,
+          'disabled' => $disabled
+          ));
         $args['blocks']['main']['options']['yubikey_required'] = array(
-          'title' => html::label('rcmfd_yubikey_required', Q($this->gettext('yubikeyrequired'))), 
-          'content' => $chk_yubikey->show($checked));
+          'title'    => html::label('rcmfd_yubikey_required', Q($this->gettext('yubikeyrequired'))), 
+          'content'  => $chk_yubikey->show($checked)
+          );
 
         // add inputfield for the YubiKey id
         $input_yubikey_id = new html_inputfield(array(
-          'name' => '_yubikey_id', 
-          'id' => 'rcmfd_yubikey_id', 
-          'size' => 10));
+          'name'     => '_yubikey_id', 
+          'id'       => 'rcmfd_yubikey_id', 
+          'size'     => 10,
+          'disabled' => $disabled
+          ));
         $args['blocks']['main']['options']['yubikey_id'] = array(
-          'title' => html::label('rcmfd_yubikey_id', Q($this->gettext('yubikeyid'))),
-          'content' => $input_yubikey_id->show(rcmail::get_instance()->config->get('yubikey_id')));
+          'title'    => html::label('rcmfd_yubikey_id', Q($this->gettext('yubikeyid'))),
+          'content'  => $input_yubikey_id->show(rcmail::get_instance()->config->get('yubikey_id')));
       }
     }
 
     return $args;
   }
 
-  function preferences_save($args)
-  {
-    if ($this->is_enabled())
-    {
-      $args['prefs']['yubikey_required'] = isset($_POST['_yubikey_required']);
-      $args['prefs']['yubikey_id'] = substr($_POST['_yubikey_id'], 0, 12);
+  function preferences_save($args) {
+    if ($this->is_enabled()) {
+      if ($this->disallow_change()) {
+        // use values already saved earlier
+        $args['prefs']['yubikey_required'] = true;
+        $args['prefs']['yubikey_id']       = rcmail::get_instance()->config->get('yubikey_id');
+      }
+      else {
+        // use newly posted values
+        $args['prefs']['yubikey_required'] = isset($_POST['_yubikey_required']);
+        $args['prefs']['yubikey_id']       = substr($_POST['_yubikey_id'], 0, 12);
+      }
     }
-
     return $args;
   }
 }
-?>
+
+//----------------------------------------------------------------------
+
+
