@@ -1,7 +1,7 @@
 # roundcube-yubikey-plugin
 Use Yubico's YubiKey to authentication on [Roundcube webmail](http://roundcube.net/).
 
-The plugin is known to be working in production with Roundcube version 0.9, 0.8 and 0.7.
+The plugin is known to be working in production with Roundcube version from 1.0 to 0.7.
 
 ##Features
 - Support alternative API servers - see `yubikey_api_url`
@@ -13,13 +13,13 @@ The plugin is known to be working in production with Roundcube version 0.9, 0.8 
 
 ## Installation
 1. Install the code in the plugin directory (i.e. roundcube/plugins/yubikey_authentication/).
-2. Add the plugin in your config file (config/main.inc.php). In this case the plugin directory name is 'yubikey_authentication'
+2. Add the plugin in your config file (config/config.inc.php formely main.inc.php). In this case the plugin directory name is 'yubikey_authentication'
 
 ```php
 $rcmail_config['plugins'] = array('yubikey_authentication');
 ```
 
-3. Set your API keys in config.inc.php by visiting https://upgrade.yubico.com/getapikey/
+3. Set your API keys in plugins/yubikey_authentication/config.inc.php by visiting https://upgrade.yubico.com/getapikey/
 
 ```php
 $rcmail_config['yubikey_api_id']  = 'ID HERE'; 
