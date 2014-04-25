@@ -13,10 +13,10 @@ The plugin is known to be working in production with Roundcube version from 1.0 
 
 ## Installation
 1. Install the code in the plugin directory (i.e. roundcube/plugins/yubikey_authentication/).
-2. Add the plugin in your config file (config/config.inc.php formely main.inc.php). In this case the plugin directory name is 'yubikey_authentication'
+2. Add the plugin name in the `plugins` array of config file (config/config.inc.php formely main.inc.php). In this case the plugin directory name is 'yubikey_authentication'
 
 ```php
-$rcmail_config['plugins'] = array('yubikey_authentication');
+$config['plugins'] = array('yubikey_authentication');
 ```
 
 3. Set your API keys in plugins/yubikey_authentication/config.inc.php by visiting https://upgrade.yubico.com/getapikey/
