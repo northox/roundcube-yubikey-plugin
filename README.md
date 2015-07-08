@@ -1,5 +1,10 @@
 # roundcube-yubikey-plugin
-Use Yubico's YubiKey to authentication on [Roundcube webmail](http://roundcube.net/).
+Use [Yubico's YubiKey](https://www.yubico.com/products/yubikey-hardware/) to authentication to [Roundcube webmail](http://roundcube.net/).
+
+The Yubikey is a USB key emulating a generic keyboard and make use of [One-time Passwords](https://en.wikipedia.org/wiki/One-time_password) to provide [two factor authentication](https://en.wikipedia.org/wiki/Two-factor_authentication).
+
+- Some people use this to mitigate the risk/impact of their password getting compromised. 
+- Others use it to reduce (but not elimitate) the risk of authenticating to their webemail account from a potentially compromised computer. The one-time password requires the attacker to conduct an active attack on the token or the session instead of simply/passively capturing your password.
 
 The plugin is known to be working in production with Roundcube from version 1.1 to 0.7.
 
