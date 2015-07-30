@@ -2,13 +2,19 @@
     "name": "northox/roundcube-yubikey-plugin",
     "type": "roundcube-plugin",
     "description": "A plugin to use Yubico's Yubikey 2nd factor with Roundcube webmail.",
-    "keywords": ["password","security","yubico","yubikey","authentication","factor", "OTP", "token", "login'],
+    "keywords": ["password","security","yubico","yubikey","authentication","factor", "OTP", "token", "login"],
     "homepage": "http://github.com/northox/roundcube-yubikey-plugin",
     "license": "GPL2",
     "authors": [
         {
             "name": "Danny Fullerton",
             "homepage": "https://mantor.org/~northox/",
+        }
+    ],
+    "repositories": [
+        {
+            "type": "composer",
+            "url": "http://plugins.roundcube.net"
         }
     ],
     "require": {
