@@ -14,6 +14,8 @@
 */
 
 require_once('lib/Yubico.php');
+require_once('lib/u2f-client-exceptions.php');
+require_once('lib/u2f-client.php');
 
 class yubikey_authentication extends rcube_plugin
 {
@@ -25,7 +27,7 @@ class yubikey_authentication extends rcube_plugin
   
   private function is_required()
   {
-    $r = ($this->get('yubikey_required') == 'on');
+    $r = ($this->get('yubikey_required') === 'on');
     return $r;
   }
  
