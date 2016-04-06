@@ -18,7 +18,7 @@ The plugin is known to be working with Roundcube version 1.0 to 1.1.4.
 
 ## Installation
 1. Install the code in the plugin directory (i.e. roundcube/plugins/yubikey_authentication/).
-2. Add the plugin name in the `plugins` array of config file (config/config.inc.php formely main.inc.php). In this case the plugin directory name is 'yubikey_authentication'
+2. Add the plugin name in the `plugins` array of the config file (config/config.inc.php formely main.inc.php). It must match the name of the directory used in #1. 
 
     ```php
     $config['plugins'] = array('yubikey_authentication');
