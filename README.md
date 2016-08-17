@@ -1,3 +1,5 @@
+[![Maintainers Wanted](https://img.shields.io/badge/maintainers-wanted-red.svg)](https://github.com/pickhardt/maintainers-wanted)
+
 # roundcube-yubikey-plugin
 Use [Yubico's YubiKey](https://www.yubico.com/products/yubikey-hardware/) to authentication to [Roundcube webmail](http://roundcube.net/).
 
