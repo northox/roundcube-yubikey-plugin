@@ -14,6 +14,7 @@ The plugin is known to be working with Roundcube version 1.0 to 1.1.4.
 - Support alternative API servers - see `yubikey_api_url`
 - Validation of the token is done via HMAC-SHA1 authentication over HTTPS (with certificate and hostname validation)
 - Usage enforcement or in other words disallow yubikey opt-out (disabled by default) - see `yubikey_disallow_user_changes`
+- Multiple keys by users.
 
 ## Requirements
 - Curl PHP module with TLS support.
@@ -51,6 +52,7 @@ This code is based on work done by Oliver Martin which was using patches from di
 ### Contributors
 - Stuart Henderson - support alternative API servers and some cosmetic tweaks
 - Peter Kahl - disallow yubikey opt-out
+- Florian Götz - multiple keys per users
 
 ### Author
 Danny Fullerton - Mantor Organization
