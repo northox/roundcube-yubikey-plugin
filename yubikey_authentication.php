@@ -83,6 +83,8 @@ class yubikey_authentication extends rcube_plugin
  
     $otp = get_input_value('_yubikey', RCUBE_INPUT_POST);
     $id = $this->get('yubikey_id');
+    $id2 = $this->get('yubikey_id2');
+    $id3 = $this->get('yubikey_id3');
     $url = $this->get('yubikey_api_url');
     $https = true;
     if (!empty($url) && $_url = parse_url($url)) {
@@ -94,7 +96,12 @@ class yubikey_authentication extends rcube_plugin
  
     // make sure that there is a YubiKey ID in the user's prefs
     // and that it matches the first 12 characters of the OTP
-    if (empty($id) || substr($otp, 0, 12) !== $id)
+
+    if (empty($id) && empty($id2) && empty($id3))
+    {
+      $this->fail();
+    }
+    if (substr($otp, 0, 12) !== $id && substr($otp, 0, 12) !== $id2 && substr($otp, 0, 12) !== $id3 )
     {
       $this->fail();
     }
@@ -159,6 +166,40 @@ class yubikey_authentication extends rcube_plugin
       ),
       'content' => $input_yubikey_id->show($this->get('yubikey_id'))
     );
+
+    // add inputfield for the YubiKey id2
+    $input_yubikey_id2 = new html_inputfield(
+      array(
+        'name'     => '_yubikey_id2', 
+        'id'       => 'rcmfd_yubikey_id2', 
+        'size'     => 12,
+        'disabled' => $disabled
+      )
+    );
+    $args['blocks']['main']['options']['yubikey_id2'] = array(
+      'title' => html::label(
+        'rcmfd_yubikey_id2', 
+        Q($this->gettext('yubikeyid2'))
+      ),
+      'content' => $input_yubikey_id2->show($this->get('yubikey_id2'))
+    );
+
+        // add inputfield for the YubiKey id3
+    $input_yubikey_id3 = new html_inputfield(
+      array(
+        'name'     => '_yubikey_id3', 
+        'id'       => 'rcmfd_yubikey_id3', 
+        'size'     => 12,
+        'disabled' => $disabled
+      )
+    );
+    $args['blocks']['main']['options']['yubikey_id3'] = array(
+      'title' => html::label(
+        'rcmfd_yubikey_id3', 
+        Q($this->gettext('yubikeyid3'))
+      ),
+      'content' => $input_yubikey_id3->show($this->get('yubikey_id3'))
+    );
  
     return $args;
   }
@@ -172,11 +213,15 @@ class yubikey_authentication extends rcube_plugin
       // use values already saved earlier
       $args['prefs']['yubikey_required'] = true;
       $args['prefs']['yubikey_id']       = $this->get('yubikey_id');
+      $args['prefs']['yubikey_id2']       = $this->get('yubikey_id2');
+      $args['prefs']['yubikey_id3']       = $this->get('yubikey_id3');
     }
     else {
       // use newly posted values
       $args['prefs']['yubikey_required'] = isset($_POST['_yubikey_required']);
       $args['prefs']['yubikey_id']       = substr($_POST['_yubikey_id'], 0, 12);
+      $args['prefs']['yubikey_id2']       = substr($_POST['_yubikey_id2'], 0, 12);
+      $args['prefs']['yubikey_id3']       = substr($_POST['_yubikey_id3'], 0, 12);
     }
     
     return $args;
