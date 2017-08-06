@@ -81,7 +81,7 @@ class yubikey_authentication extends rcube_plugin
   {
     if (!$this->is_enabled() || !$this->is_required()) return $args;
  
-    $otp = get_input_value('_yubikey', RCUBE_INPUT_POST);
+    $otp = rcube_utils::get_input_value('_yubikey', rcube_utils::INPUT_POST);
     $id = $this->get('yubikey_id');
     $id2 = $this->get('yubikey_id2');
     $id3 = $this->get('yubikey_id3');
@@ -145,7 +145,7 @@ class yubikey_authentication extends rcube_plugin
     $args['blocks']['main']['options']['yubikey_required'] = array(
       'title' => html::label(
         'rcmfd_yubikey_required', 
-        Q($this->gettext('yubikeyrequired'))
+        rcube::Q($this->gettext('yubikeyrequired'))
       ), 
       'content' => $chk_yubikey->show(!$this->is_required()) // TODO this is weird
     );
@@ -162,7 +162,7 @@ class yubikey_authentication extends rcube_plugin
     $args['blocks']['main']['options']['yubikey_id'] = array(
       'title' => html::label(
         'rcmfd_yubikey_id', 
-        Q($this->gettext('yubikeyid'))
+        rcube::Q($this->gettext('yubikeyid'))
       ),
       'content' => $input_yubikey_id->show($this->get('yubikey_id'))
     );
@@ -179,7 +179,7 @@ class yubikey_authentication extends rcube_plugin
     $args['blocks']['main']['options']['yubikey_id2'] = array(
       'title' => html::label(
         'rcmfd_yubikey_id2', 
-        Q($this->gettext('yubikeyid2'))
+        rcube::Q($this->gettext('yubikeyid2'))
       ),
       'content' => $input_yubikey_id2->show($this->get('yubikey_id2'))
     );
@@ -196,7 +196,7 @@ class yubikey_authentication extends rcube_plugin
     $args['blocks']['main']['options']['yubikey_id3'] = array(
       'title' => html::label(
         'rcmfd_yubikey_id3', 
-        Q($this->gettext('yubikeyid3'))
+        rcube::Q($this->gettext('yubikeyid3'))
       ),
       'content' => $input_yubikey_id3->show($this->get('yubikey_id3'))
     );
