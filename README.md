@@ -8,9 +8,9 @@ The Yubikey is a USB key emulating a generic keyboard and make use of [One-time 
 - Some people use this to mitigate the risk/impact of their password getting compromised. 
 - Others use it to reduce (but not elimitate) the risk of authenticating to their webemail account from a potentially compromised computer. The one-time password requires the attacker to conduct an active attack on the token or the session instead of simply/passively capturing your password.
 
-The plugin is known to be working with Roundcube version 1.0 to 1.1.4.
+The plugin is known to be working with Roundcube version 1.0 to 1.3.1.
 
-##Features
+## Features
 - Support alternative API servers - see `yubikey_api_url`
 - Validation of the token is done via HMAC-SHA1 authentication over HTTPS (with certificate and hostname validation)
 - Usage enforcement or in other words disallow yubikey opt-out (disabled by default) - see `yubikey_disallow_user_changes`
@@ -53,6 +53,7 @@ This code is based on work done by Oliver Martin which was using patches from di
 - Stuart Henderson - support alternative API servers and some cosmetic tweaks
 - Peter Kahl - disallow yubikey opt-out
 - Florian Götz - multiple keys per users
+- Mathias - 1.3.1 bug fix
 
 ### Author
 Danny Fullerton - Mantor Organization
