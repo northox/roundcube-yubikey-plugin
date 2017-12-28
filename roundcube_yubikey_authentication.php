@@ -15,7 +15,7 @@
 
 require_once('lib/Yubico.php');
 
-class yubikey_authentication extends rcube_plugin
+class roundcube_yubikey_authentication extends rcube_plugin
 {
   private function is_enabled()
   {
