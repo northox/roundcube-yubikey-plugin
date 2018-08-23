@@ -20,14 +20,14 @@ The plugin is known to be working with Roundcube version 1.0 to 1.3.1.
 - Curl PHP module with TLS support.
 
 ## Installation
-1. Install the code in the plugin directory and name it exactly yubikey_authentication (roundcube/plugins/yubikey_authentication/)
+1. Install the code in the plugin directory and name it exactly yubikey_authentication (roundcube/plugins/roundcube_yubikey_authentication/)
 2. Add the plugin name in the `plugins` array of the config file (config/config.inc.php formely main.inc.php). It must match the name of the directory used in #1. 
 
     ```php
-    $config['plugins'] = array('yubikey_authentication');
+    $config['plugins'] = array('roundcube_yubikey_authentication');
     ```
 
-3. Set your API keys in plugins/yubikey_authentication/config.inc.php by visiting https://upgrade.yubico.com/getapikey/
+3. Set your API keys in plugins/roundcube_yubikey_authentication/config.inc.php by visiting https://upgrade.yubico.com/getapikey/
 
     ```php
     $rcmail_config['yubikey_api_id']  = 'ID HERE'; 
