@@ -27,7 +27,10 @@ The plugin is known to be working with Roundcube version 1.0 to 1.3.1.
     $config['plugins'] = array('roundcube_yubikey_authentication');
     ```
 
-3. Set your API keys in plugins/roundcube_yubikey_authentication/config.inc.php by visiting https://upgrade.yubico.com/getapikey/
+3. Set your API keys in config.inc.php by visiting https://upgrade.yubico.com/getapikey/ .
+   Copy plugins/roundcube_yubikey_authentication/config.inc.php.sample to
+   plugins/roundcube_yubikey_authentication/config.inc.php and edit according to
+   your API registration:
 
     ```php
     $rcmail_config['yubikey_api_id']  = 'ID HERE'; 
