@@ -1,4 +1,4 @@
-[![Maintainers Wanted](https://img.shields.io/badge/maintainers-wanted-red.svg)](https://github.com/pickhardt/maintainers-wanted)
+[![Maintainers Wanted](https://img.shields.io/badge/maintainers-wanted-red.svg)](https://github.com/pickhardt/maintainers-wanted) - THIS REPOSITORY HAS BEEN ADANDONED AND IS NO LONGER MAINTAINED EVEN THOUGH IT LIKELY STILL WORKS.
 
 # roundcube-yubikey-plugin
 Use [Yubico's YubiKey](https://www.yubico.com/products/yubikey-hardware/) to authentication to [Roundcube webmail](http://roundcube.net/).
@@ -57,6 +57,7 @@ This code is based on work done by Oliver Martin which was using patches from di
 - Peter Kahl - disallow yubikey opt-out
 - Florian Götz - multiple keys per users
 - Mathias - 1.3.1 bug fix
+- Corbolais - various fixes
 
 ### Author
 Danny Fullerton - Mantor Organization
